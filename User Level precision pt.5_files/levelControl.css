@@ -1,0 +1,335 @@
+body, html{
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow:hidden;
+  font-family:Helvetica;
+}
+.canvas {
+  width: 100%;
+  height: 100%;
+/*   border: 1px solid black; */
+  background-color: grey;
+  z-index: 0;
+}
+
+.menu-check{
+  left: 0.5em;
+  top: 0.5em;
+  position: absolute;
+  opacity: 0;
+  z-index: 40;
+  width: 2.75em;
+  height: 2.75em;
+  cursor: pointer;
+}
+
+.menu-container {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 0em;
+  height: 100%;
+  width: 0px;
+  top: -0px;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+}
+.menu-icon-box{
+/*   display: inline-block; */
+  margin: 0.5em;
+/*   width: fit-content; */
+  width: 1.75em;
+  padding: 0.5em;
+  height: 1.5em;
+/*   border: 1px solid green; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 39;
+}
+.menu-check:hover ~ .menu-icon-box{
+  background-color: darkgrey;
+}
+.menu-icon-inner{
+  display: block;
+  position: relative;
+  width: 1.5em;
+  height: 4px;
+  margin: 0px auto;
+  
+  background: #222222;
+  border-radius: 2px;
+  
+/*   z-index: 1; */
+}
+
+.menu-check:checked ~ .menu-icon-box{
+  background-color: white;
+}
+.menu-items{
+  /* padding: 0.5em; */
+  padding-top: 2em;
+  height: 100%;
+  max-width: 100vw;
+  position: absolute;
+  z-index: 12;
+  background-color: #fff;
+  /* border: 1px solid black; */
+  
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+.menu-list{
+  /* padding: 0em 0.5em; */
+  height: 100%;
+  /* display: block; */
+  /* overflow: auto; */
+  box-sizing: border-box;
+  /* white-space: nowrap; */
+  display: flex;
+  flex-direction: column;
+}
+.menu-check:not(:checked) ~ .menu-items{
+  display: none;
+}
+.menu-item{
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  font-size: 1.25em;
+  /* color: #555555; */
+  color: rgba(0,0,0,0.75);
+}
+.menu-item:hover{
+  background-color: #aaa;
+}
+.next, .previous{
+  z-index: 10;
+  position: absolute;
+  bottom: 1em;
+  border-radius: 50%;
+  padding: 0.5em;
+}
+.next:hover, .previous:hover{
+  background-color: darkgrey;
+}
+.previous {
+  left: 1em;
+}
+
+.next {
+  right: 1em;
+}
+.previous .arrow{
+  transform: rotate(-135deg);
+}
+
+.next .arrow{
+  transform: rotate(45deg);
+}
+
+.arrow{
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  color: #666;
+  box-sizing: border-box;
+  
+  width: 1.25em;
+  height: 1.25em;
+  border-width: 4px 4px 0px 0px;
+  border-style: solid;
+  margin: 10px;
+  border-radius: 0 2px 0 0;
+}
+.arrow:before{
+  content: "";
+  box-sizing: border-box;
+  border-radius: 2px;
+  position: absolute;
+  background-color:  #666;
+
+  right: 0;
+  top: -3px;
+  width: 23px;
+  height: 4px;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+  -webkit-transform-origin: right top;
+          transform-origin: right top;
+  /* box-shadow: inset 0 0 0 32px; */
+}
+.modal{
+  position:absolute;
+  background-color:rgba(0,0,0,0.2);
+  width:100%;
+  height:100%;
+  left:0;
+  top:0;
+}
+.modal-content{
+  background-color:white;
+  width: 70%;
+  height:100%;
+  margin: auto;
+  overflow:hidden;
+  position: relative;
+}
+.hidden{
+  display:none;
+}
+.heading-container {
+  padding: 5% 0em;
+  background-color: #426;
+  text-align:center;
+  max-height:30%;
+}
+
+.heading {
+  color: white;
+  font-family: helvetica;
+  letter-spacing: 3px;
+}
+.list-container {
+  width: 50%;
+  height: 60%;
+  margin: 5em auto;
+  margin-top: 0em;
+  overflow: auto;
+}
+.search-container{
+  width: 50%;
+  margin: 5% auto;
+  margin-bottom: 0em;
+  overflow: auto;
+}
+#search {
+  width: 100%;
+  background-color: white;
+  border: 1px solid rgba(163, 141, 119, 0.25);
+  color: #454545;
+  padding: 0.75rem 1rem;
+  font-size: 14px;
+  font-family: helvetica;
+  font-weight: 100;
+  text-decoration: none;
+  display: inline-block;
+  box-sizing: border-box;
+  outline: none;
+  transition-duration: 0.3s;
+}
+#search::placeholder {
+  color: #a6a6a6;
+}
+#search:hover {
+  border: 1px solid rgba(163, 141, 119, 0.25);
+}
+#search:focus {
+  border: 1px solid #b9b9b9;
+}
+
+#list {
+  width: 100%;
+  line-height: 150%;
+  /* list-style: none; */
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  /* box-sizing: border-box;
+  -webkit-box-shadow: inset 0px -5px 15px -5px rgba(0,0,0,0.75);
+  -moz-box-shadow: inset 0px -5px 15px -5px rgba(0,0,0,0.75);
+  box-shadow: inset 0px -5px 15px -5px rgba(0,0,0,0.75); */
+}
+.list-item {
+  width: 100%;
+  padding: 1em; 
+  background-color: #ffffff;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+/*   border: 1px solid rgba(163, 141, 119, 0.25); */
+}
+.list-item:hover{
+  background-color: #eeeeee;
+}
+.no-results{
+  width: 100%;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.modal-close{
+  position: absolute;
+  cursor: pointer;
+  font-size: 2em;
+  top: 1em;
+  right: 1em;
+  color: grey;
+}
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+.joystick{
+  background-color: darkgrey;
+  opacity: 0.75;
+  position: absolute;
+  width: 3.5em;
+  height: 3.5em;
+  border-radius: 50%;
+  z-index: 3;
+}
+
+#joy-container{
+  width: 7em;
+  height: 7em;
+  display: none;
+}
+
+#coinDisplay{
+  position:absolute;
+  top:0px;
+  right: 0px;
+  z-index:1;
+  padding: 0.5em 1em;
+  margin: 0em;
+  /* border: 1px solid black; */
+  /* border-top: none; */
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  background-color: rgba(255,255,255, 1);
+  
+  /* font-weight: 800; */
+  color: gold;
+  -webkit-text-fill-color: gold; /* Will override color (regardless of order) */
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+.logo-container{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid grey;
+  padding: 0.5em 4em;
+  box-sizing: border-box;
+}
+.logo{
+  /* width: 100%; */
+  height: 10em;
+  box-sizing: border-box;
+}
+.spacer{
+  height: 2px;
+  width: 100%;
+  border-bottom: 1px solid grey;
+  margin: 1em 0em;
+}
+.music-attr{
+  padding: 1em;
+}
+/* We need to update the coin display to drop down when you get a coin, and to be hidden when not. You should be able to hover over it (a minimized form will hang in the top) to show your current coin count. */
