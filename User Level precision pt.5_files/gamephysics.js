@@ -375,13 +375,14 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
   }
 
   function screenDims(specification) {
+	//Returns the screen dimensions of a specified canvas element
     return {
       x: renderContexts[specification].canvas.width,
       y: renderContexts[specification].canvas.height
     };
   }
 
-  function getCollisions(lvlArr, vals, offsets)
+  function getCollisions(lvlArr, vals, offsets){
   let whichOption = (!vals ? getBlock : a => a)
   offsets = offsets || {
     x: 0,
