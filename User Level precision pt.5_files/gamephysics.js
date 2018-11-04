@@ -201,7 +201,7 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
               }
             },
             default: {
-              color: 0xFFFFF00,
+              color: 0xFFFF00,
               opacity: 0.7
             },
             collected: {
@@ -389,8 +389,7 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
     offsets = offsets || {
       x: 0,
       y: 0
-    };
-    console.log(offsets)
+    }
     return {
       ul: getBlock(getMods({
         x: {
@@ -437,14 +436,12 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
   }
 
   function getBlock(indices, list) {
-    console.log("getblock " + list)
     listDims = getDims(list);
     if (indices.x >= listDims[1] || indices.y >= listDims[0] || indices.x <= 0) {
       return 3; //Lava, so that if the player touches, they die
     } else if (indices.y <= 0) {
       return 4;
     } else {
-      console.log(list, indices)
       return list[indices.y][indices.x]; //Otherwise normal block
     }
   }
@@ -474,7 +471,6 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
 
   function render2D() {
     if (isSetup) {
-      console.log("hi")
       let count1 = -1;
       let count2 = -1;
       let screenDims = {
@@ -499,12 +495,11 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
             if (blockData[levelArr[i][e]]) {
               let theData = blockData[levelArr[i][e]];
               if (theData.hasOwnProperty("render")) {
-                theData.render[2](levelArr, false, {
+                theData.render[2](levelArr, ret, {
                   x: e,
                   y: i
-                }, blockData); //Setup later
+                }, blockData); //Setup later, (lvlArr, methods, coords, blockData)
               } else if (theData.hasOwnProperty("default")) {
-                console.log(" jjj")
                 makeRect(addOpacities(theData.default.color, theData.default.opacity || 1.0), [Math.floor(screenDims.x / 2) - dims.x.playerPosition + e * dims.x.blockSize, Math.floor(screenDims.y / 2) - dims.y.playerPosition + i * dims.y.blockSize, dims.x.blockSize, dims.y.blockSize], renderContexts[2].context);
               } else {
                 count--;
