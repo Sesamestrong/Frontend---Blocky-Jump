@@ -180,7 +180,7 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
             onPhysics: (lvlArr, methods) => {
               let myCols = Object.values(getCollisions(lvlArr, true));
               for (i in myCols) {
-                if (getBlock(myCols[i]) == 7 && !states.Coin.collected.includes(myCols[i])) {
+                if (getBlock(myCols[i], lvlArr) == 7 && !states.Coin.collected.includes(myCols[i])) {
                   collected.push(myCols[i]);
                 }
               }
@@ -215,10 +215,10 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
                 x: dims.x.vel,
                 y: dims.y.vel
               });
-              if (dims.y.velocity > 0 && (getBlock(myCols.dl) == 1 || getBlock(myCols.dr) == 1)) {
+              if (dims.y.velocity > 0 && (getBlock(myCols.dl, lvlArr) == 1 || getBlock(myCols.dr, lvlArr) == 1)) {
                 dims.y.playerPosition = myCols.dr.y * dims.y.blockSize - 1;
                 dims.y.velocity = 0;
-              } else if (dims.y.velocity < 0 && (getBlock(myCols.ul) == 1 || getBlock(myCols.ur) == 1)) {
+              } else if (dims.y.velocity < 0 && (getBlock(myCols.ul, lvlArr) == 1 || getBlock(myCols.ur, lvlArr) == 1)) {
                 dims.y.playerPosition = myCols.ul.y * dims.y.blockSize + dims.y.blockSize + 1;
                 dims.y.velocity = 0;
               }
@@ -381,246 +381,236 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
     };
   }
 
-  function getCollisions(lvlArr, vals, offsets) {
-    console.log(lvlArr)
-    let whichOption = (vals ? getBlock : a => a)
-    offsets = offsets || {
-      x: 0,
-      y: 0
-    }
-    return {
-      ul: whichOption(getMods({
-        x: {
-          fullSize: dims.x.playerPosition + offsets.x + 1,
-          unitSize: dims.x.blockSize
-        },
-        y: {
-          fullSize: dims.y.playerPosition + offsets.y + 1,
-          unitSize: dims.y.blockSize
-        }
-      }), lvlArr),
-      ur: whichOption(getMods({
-        x: {
-          fullSize: dims.x.playerPosition + dims.x.playerSize + offsets.x - 1,
-          unitSize: dims.x.blockSize
-        },
-        y: {
-          fullSize: dims.y.playerPosition + offsets.y + 1,
-          unitSize: dims.y.blockSize
-        }
-      }), lvlArr),
-      dr: whichOption(getMods({
-        x: {
-          fullSize: dims.x.playerPosition + dims.x.playerSize + offsets.x - 1,
-          unitSize: dims.x.blockSize
-        },
-        y: {
-          fullSize: dims.y.playerPosition + dims.y.playerSize + offsets.y - 1,
-          unitSize: dims.y.blockSize
-        }
-      }), lvlArr),
-      dl: whichOption(getMods({
-        x: {
-          fullSize: dims.x.playerPosition + offsets.x + 1,
-          unitSize: dims.x.blockSize
-        },
-        y: {
-          fullSize: dims.y.playerPosition + dims.y.playerSize + offsets.y - 1,
-          unitSize: dims.y.blockSize
-        }
-      }), lvlArr)
-    }
-
+  function getCollisions(lvlArr, vals, offsets)
+  let whichOption = (!vals ? getBlock : a => a)
+  offsets = offsets || {
+    x: 0,
+    y: 0
+  }
+  return {
+    ul: whichOption(getMods({
+      x: {
+        fullSize: dims.x.playerPosition + offsets.x + 1,
+        unitSize: dims.x.blockSize
+      },
+      y: {
+        fullSize: dims.y.playerPosition + offsets.y + 1,
+        unitSize: dims.y.blockSize
+      }
+    }), lvlArr),
+    ur: whichOption(getMods({
+      x: {
+        fullSize: dims.x.playerPosition + dims.x.playerSize + offsets.x - 1,
+        unitSize: dims.x.blockSize
+      },
+      y: {
+        fullSize: dims.y.playerPosition + offsets.y + 1,
+        unitSize: dims.y.blockSize
+      }
+    }), lvlArr),
+    dr: whichOption(getMods({
+      x: {
+        fullSize: dims.x.playerPosition + dims.x.playerSize + offsets.x - 1,
+        unitSize: dims.x.blockSize
+      },
+      y: {
+        fullSize: dims.y.playerPosition + dims.y.playerSize + offsets.y - 1,
+        unitSize: dims.y.blockSize
+      }
+    }), lvlArr),
+    dl: whichOption(getMods({
+      x: {
+        fullSize: dims.x.playerPosition + offsets.x + 1,
+        unitSize: dims.x.blockSize
+      },
+      y: {
+        fullSize: dims.y.playerPosition + dims.y.playerSize + offsets.y - 1,
+        unitSize: dims.y.blockSize
+      }
+    }), lvlArr)
   }
 
-  function getBlock(indices, list) {
-    listDims = getDims(list);
-    if (indices.x >= listDims[1] || indices.y >= listDims[0] || indices.x <= 0) {
-      return 3; //Lava, so that if the player touches, they die
-    } else if (indices.y <= 0) {
-      return 4;
-    } else {
-      return list[indices.y][indices.x]; //Otherwise normal block
-    }
-  }
+}
 
-  function clearCanvas(whichCanvas) {
-    whichCanvas.width = whichCanvas.width;
-    whichCanvas.height = whichCanvas.height;
+function getBlock(indices, list) {
+  listDims = getDims(list);
+  if (indices.x >= listDims[1] || indices.y >= listDims[0] || indices.x <= 0) {
+    return 3; //Lava, so that if the player touches, they die
+  } else if (indices.y <= 0) {
+    return 4;
+  } else {
+    return list[indices.y][indices.x]; //Otherwise normal block
   }
+}
 
-  function makeRect(color, size, context) {
-    count++;
-    if (typeof color != "string") color = hexToRGB(color);
-    context.fillStyle = color;
-    context.fillRect(size[0], size[1], size[2], size[3]);
+function clearCanvas(whichCanvas) {
+  whichCanvas.width = whichCanvas.width;
+  whichCanvas.height = whichCanvas.height;
+}
+
+function makeRect(color, size, context) {
+  if (typeof color != "string") color = hexToRGB(color);
+  context.fillStyle = color;
+  context.fillRect(size[0], size[1], size[2], size[3]);
+}
+
+function notificationText(toDisplay, context) {
+  if (toDisplay) {
+    clearCanvas(context.canvas);
+    currentText = toDisplay;
+    makeRect("rgba(255,255,255,0.8)", [0, window.innerHeight / 4, window.innerWidth, window.innerHeight / 2], renderContexts.notifications.context)
+    context.fillStyle = 0x000000
+    context.font = parseInt(window.innerWidth / 20) + "px Helvetica";
+    context.fillText(toDisplay, window.innerWidth / 2 - parseInt(window.innerWidth / 90) * toDisplay.length, window.innerHeight / 2);
   }
+}
 
-  function notificationText(toDisplay, context) {
-    if (toDisplay) {
-      clearCanvas(context.canvas);
-      currentText = toDisplay;
-      makeRect("rgba(255,255,255,0.8)", [0, window.innerHeight / 4, window.innerWidth, window.innerHeight / 2], renderContexts.notifications.context)
-      context.fillStyle = 0x000000
-      context.font = parseInt(window.innerWidth / 20) + "px Helvetica";
-      context.fillText(toDisplay, window.innerWidth / 2 - parseInt(window.innerWidth / 90) * toDisplay.length, window.innerHeight / 2);
-    }
-  }
-
-  function render2D() {
-    if (isSetup) {
-      let count1 = -1;
-      let count2 = -1;
-      let screenDims = {
-        x: renderContexts[2].canvas.width,
-        y: renderContexts[2].canvas.height
-      };
-      let levelDims = {
-        x: dims.x.totalBlocks * dims.x.blockSize,
-        y: dims.y.totalBlocks * dims.y.blockSize
-      };
-      let myLocs = getCollisions(levelArr);
-      renderContexts[2].context.fillStyle = "#FFFFFF";
-      renderContexts[2].context.fillRect(0, 0, screenDims.x, screenDims.y);
-      for (i = -1; i <= dims.y.totalBlocks; i++) {
-        count1++;
-        count2 = -1;
-        for (
-          e = -1; e <= dims.x.totalBlocks; e++
-        ) {
-          count2++;
-          if (i >= 0 && i < dims.y.totalBlocks && e >= 0 && e < dims.x.totalBlocks) {
-            if (blockData[levelArr[i][e]]) {
-              let theData = blockData[levelArr[i][e]];
-              if (theData.hasOwnProperty("render")) {
-                theData.render[2](levelArr, ret, {
-                  x: e,
-                  y: i
-                }, blockData); //Setup later, (lvlArr, methods, coords, blockData)
-              } else if (theData.hasOwnProperty("default")) {
-                makeRect(addOpacities(theData.default.color, theData.default.opacity || 1.0), [Math.floor(screenDims.x / 2) - dims.x.playerPosition + e * dims.x.blockSize, Math.floor(screenDims.y / 2) - dims.y.playerPosition + i * dims.y.blockSize, dims.x.blockSize, dims.y.blockSize], renderContexts[2].context);
-              } else {
-                count--;
-              }
-            } else {
-              renderContexts[2].context.fillStyle = 'rgb(150,150,150)';
-            }
+function render2D() {
+  if (isSetup) {
+    let count1 = -1;
+    let count2 = -1;
+    let screenDims = {
+      x: renderContexts[2].canvas.width,
+      y: renderContexts[2].canvas.height
+    };
+    let levelDims = {
+      x: dims.x.totalBlocks * dims.x.blockSize,
+      y: dims.y.totalBlocks * dims.y.blockSize
+    };
+    let myLocs = getCollisions(levelArr);
+    renderContexts[2].context.fillStyle = "#FFFFFF";
+    renderContexts[2].context.fillRect(0, 0, screenDims.x, screenDims.y);
+    for (i = -1; i <= dims.y.totalBlocks; i++) {
+      count1++;
+      count2 = -1;
+      for (
+        e = -1; e <= dims.x.totalBlocks; e++
+      ) {
+        count2++;
+        if (i >= 0 && i < dims.y.totalBlocks && e >= 0 && e < dims.x.totalBlocks) {
+          if (blockData[levelArr[i][e]]) {
+            let theData = blockData[levelArr[i][e]];
+            if (theData.hasOwnProperty("render")) {
+              theData.render[2](levelArr, ret, {
+                x: e,
+                y: i
+              }, blockData); //Setup later, (lvlArr, methods, coords, blockData)
+            } else if (theData.hasOwnProperty("default")) {
+              makeRect(addOpacities(theData.default.color, theData.default.opacity || 1.0), [Math.floor(screenDims.x / 2) - dims.x.playerPosition + e * dims.x.blockSize, Math.floor(screenDims.y / 2) - dims.y.playerPosition + i * dims.y.blockSize, dims.x.blockSize, dims.y.blockSize], renderContexts[2].context);
+            } else {}
+          } else {
+            renderContexts[2].context.fillStyle = 'rgb(150,150,150)';
           }
         }
-        makeRect("rgb(100,100,100)", [Math.floor(screenDims.x / 2), Math.floor(screenDims.y / 2), dims.x.playerSize, dims.y.playerSize], renderContexts[2].context)
-
       }
-    } else {
-      throw "Undefined context for 2D platformer--Headless mode is not yet supported";
-    }
-  }
+      makeRect("rgb(100,100,100)", [Math.floor(screenDims.x / 2), Math.floor(screenDims.y / 2), dims.x.playerSize, dims.y.playerSize], renderContexts[2].context)
 
-  function getDims(arr) { //Takes in a matrix, just for speed - Can be converted to a 3D tensor
-    allDims = [1]; //Starts with a z-dimension of 1
-    if (arr instanceof Array) {
-      allDims.push(arr.length);
-      for (i in arr) {
-        if (allDims.length <= 2) allDims.push(arr[i].length)
-        if (arr[i].length != allDims[2]) {
-          throw "Irregular matrix dimensions.";
-        }
+    }
+  } else {
+    throw "Undefined context for 2D platformer--Headless mode is not yet supported";
+  }
+}
+
+function getDims(arr) { //Takes in a matrix, just for speed - Can be converted to a 3D tensor
+  allDims = [1]; //Starts with a z-dimension of 1
+  if (arr instanceof Array) {
+    allDims.push(arr.length);
+    for (i in arr) {
+      if (allDims.length <= 2) allDims.push(arr[i].length)
+      if (arr[i].length != allDims[2]) {
+        throw "Irregular matrix dimensions.";
       }
-      return allDims;
-    } else {
-      throw "Argument must be an Array.";
     }
-  } //Todo: convert to an actual Array method
-
-
-  function makeRandom(probabilities, dimensions) {
-    if (probabilities) {
-      let allPossibilities = Object.keys(probabilities);
-      let newArr = Array(dimensions.y).fill(0).map(i => {
-        return Array(dimensions.x).fill(0).map(i => {
-          return chooseElement(probabilities);
-        })
-      });
-      return newArr;
-    } else {
-      //Run defaults
-      return ret.makeRandom({
-        def: 0,
-        allProbs: [0, 0.25, 1 / 9, 1 / 15]
-      }, {
-        x: 50,
-        y: 50
-      });
-    }
+    return allDims;
+  } else {
+    throw "Argument must be an Array.";
   }
+} //Todo: convert to an actual Array method
 
-  function physicsCycle() {
-    //Do physics stuff
-    Object.values(blockData).map(i => {
-      if (i.hasOwnProperty("onPhysics")) {
-        i.onPhysics(levelArr, ret);
-      }
-    })
-  }
 
-  function getMods(blocksToGet) {
-    if (blocksToGet instanceof Object) {
-      let toReturn = {
-        error: []
-      };
-      let allBlockNames = Object.keys(blocksToGet);
-      for (i in allBlockNames) {
-        if (blocksToGet[allBlockNames[i]] instanceof Object && blocksToGet[allBlockNames[i]].hasOwnProperty("fullSize") && blocksToGet[allBlockNames[i]].hasOwnProperty("unitSize")) {
-          toReturn[allBlockNames[i]] = Math.floor(blocksToGet[allBlockNames[i]].fullSize / blocksToGet[allBlockNames[i]].unitSize);
-        } else {
-          toReturn.error.push("Error when calculating block of " + allBlockNames[i] + ": Each dimension query must be of shape {fullSize:____, unitSize:_____} where both fullSize and unitSize are integers")
-        }
-      }
-      return toReturn;
-    }
-    throw "Error: Object must be of shape {myLocs.ul.x: {fullSize:dims.x.playerPosition,unitSize:dims.x.blockSize},myLocs.ul.y:...}"
-
-  }
-
-  function resetLevel() {
-    // Reset coins and other temp things
-    Object.values(blockData).map(i => {
-      i.onReset(states, levelArr, ret);
+function makeRandom(probabilities, dimensions) {
+  if (probabilities) {
+    let allPossibilities = Object.keys(probabilities);
+    let newArr = Array(dimensions.y).fill(0).map(i => {
+      return Array(dimensions.x).fill(0).map(i => {
+        return chooseElement(probabilities);
+      })
+    });
+    return newArr;
+  } else {
+    //Run defaults
+    return ret.makeRandom({
+      def: 0,
+      allProbs: [0, 0.25, 1 / 9, 1 / 15]
+    }, {
+      x: 50,
+      y: 50
     });
   }
+}
 
-  function runMapGen(numCycles, mapGenName, toRun) {
-    if (mapGenName) {
-      //For a custom mapgen--later
-      return toRun;
-    } else {
-      for (i = 0; i < numCycles; i++) {
-        toRun = runCavingCycle(toRun);
+function physicsCycle() {
+  //Do physics stuff
+  Object.values(blockData).map(i => {
+    if (i.hasOwnProperty("onPhysics")) {
+      i.onPhysics(levelArr, ret);
+    }
+  })
+}
+
+function getMods(blocksToGet) {
+  if (blocksToGet instanceof Object) {
+    let toReturn = {
+      error: []
+    };
+    let allBlockNames = Object.keys(blocksToGet);
+    for (i in allBlockNames) {
+      if (blocksToGet[allBlockNames[i]] instanceof Object && blocksToGet[allBlockNames[i]].hasOwnProperty("fullSize") && blocksToGet[allBlockNames[i]].hasOwnProperty("unitSize")) {
+        toReturn[allBlockNames[i]] = Math.floor(blocksToGet[allBlockNames[i]].fullSize / blocksToGet[allBlockNames[i]].unitSize);
+      } else {
+        toReturn.error.push("Error when calculating block of " + allBlockNames[i] + ": Each dimension query must be of shape {fullSize:____, unitSize:_____} where both fullSize and unitSize are integers")
       }
-      return toRun;
+    }
+    return toReturn;
+  }
+  throw "Error: Object must be of shape {myLocs.ul.x: {fullSize:dims.x.playerPosition,unitSize:dims.x.blockSize},myLocs.ul.y:...}"
+
+}
+
+function resetLevel() {
+  // Reset coins and other temp things
+  Object.values(blockData).map(i => {
+    i.onReset(states, levelArr, ret);
+  });
+}
+
+function runMapGen(numCycles, mapGenName, toRun) {
+  if (mapGenName) {
+    //For a custom mapgen--later
+    return toRun;
+  } else {
+    for (i = 0; i < numCycles; i++) {
+      toRun = runCavingCycle(toRun);
+    }
+    return toRun;
+  }
+}
+
+function teleport(location, isBlocks) {
+  locs = Object.keys(location);
+  for (i in locs) {
+    if (location.hasOwnProperty(locs[i])) {
+      dims[locs[i]].position = (isBlocks ? location[locs[i]] * dims[locs[i]].blockHeight : location[locs[i]])
     }
   }
+}
 
-  function teleport(location, isBlocks) {
-    locs = Object.keys(location);
-    for (i in locs) {
-      if (location.hasOwnProperty(locs[i])) {
-        dims[locs[i]].position = (isBlocks ? location[locs[i]] * dims[locs[i]].blockHeight : location[locs[i]])
-      }
-    }
-  }
-
-  ret.initPlatformer(list, renderSpot, levelData);
-  ret.setRender(false);
-  //ret.start();
-  ret.getDims = () => {
-    return dims;
-  }
-  ret.drawRect = function() {
-    makeRect("rgb(100,100,100)", [0, 0, 50, 500], renderContexts[2].context, true);
-  }
-  ret.getMods = getMods;
-  ret.getCollisions = getCollisions;
-  return ret;
+ret.initPlatformer(list, renderSpot, levelData);
+ret.setRender(false);
+//ret.start();
+ret.getMods = getMods;
+ret.getCollisions = getCollisions;
+return ret;
 }
 /*Todo:
 - Rewrite code, make it nice
