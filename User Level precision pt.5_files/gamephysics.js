@@ -1,6 +1,7 @@
 const URLReader = new URLSearchParams(window.location.search);;
 const RGB = /rgb\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)/i;
 const HEX = /([0-9abcdef]{2})([0-9abcdef]{2})([0-9abcdef]{2})/i
+var count = 0;
 /*
 {
   let fallback = console.log.bind(console);
@@ -226,7 +227,11 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
               }
             },
             defaultColor: 0x000000,
-            defaultOpacity: 1.0
+            defaultOpacity: 1.0,
+            default: {
+              color: 0x000000,
+              opacity: 1
+            }
           },
           0: {
             name: "Air",
@@ -234,7 +239,11 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
               //Nothing
             },
             defaultColor: "rgb(50,50,50)",
-            defaultOpacity: 0.2
+            defaultOpacity: 0.2,
+            default: {
+              color: "rgb(50,50,50)",
+              opacity: 0.2
+            }
           },
           2: {
             name: "Water",
@@ -242,7 +251,11 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
               //Let the player swim
             },
             defaultColor: 0x0022FF,
-            defaultOpacity: 0.5
+            defaultOpacity: 0.5,
+            default: {
+              color: 0x0022FF,
+              opacity: 0.5
+            }
           },
           3: {
             name: "Lava",
@@ -253,7 +266,11 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
               }
             },
             defaultColor: 0xFF0000,
-            defaultOpacity: 0.6
+            defaultOpacity: 0.6,
+            default: {
+              color: 0xFF0000,
+              opacity: 0.6
+            }
           },
           4: {
             name: "Win",
@@ -265,7 +282,11 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
               }
             },
             defaultColor: 0x00FF00,
-            defaultOpacity: 1.0
+            defaultOpacity: 1.0,
+            default: {
+              color: 0x00FF00,
+              opacity: 1.0
+            }
           },
           5: {
             name: "Trampoline",
@@ -273,7 +294,11 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
               //Make the player jump if touching a trampoline
             },
             defaultColor: 0x888800,
-            defaultOpacity: 1.0
+            defaultOpacity: 1.0,
+            default: {
+              color: 0x888800,
+              opacity: 1.0
+            }
           },
           6: {
             name: "Checkpoint",
@@ -281,7 +306,11 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
               //Set checkpoints
             },
             defaultColor: 0xFF00FF,
-            defaultOpacity: 0.8
+            defaultOpacity: 0.8,
+            default: {
+              color: 0xFF00FF,
+              opacity: 0.8
+            }
           },
           8: {
             name: "Physics",
@@ -426,6 +455,7 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
   }
 
   function makeRect(color, size, context) {
+    count++;
     if (typeof color != "string") color = hexToRGB(color);
     context.fillStyle = color;
     context.fillRect(size[0], size[1], size[2], size[3]);
@@ -444,6 +474,7 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
 
   function render2D() {
     if (isSetup) {
+      console.log("hi")
       let count1 = -1;
       let count2 = -1;
       let screenDims = {
@@ -473,8 +504,11 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
                   y: i
                 }, blockData); //Setup later
               } else if (theData.hasOwnProperty("default")) {
+                console.log(" jjj")
                 makeRect(addOpacities(theData.default.color, theData.default.opacity || 1.0), [Math.floor(screenDims.x / 2) - dims.x.playerPosition + e * dims.x.blockSize, Math.floor(screenDims.y / 2) - dims.y.playerPosition + i * dims.y.blockSize, dims.x.blockSize, dims.y.blockSize], renderContexts[2].context);
-              } else {}
+              } else {
+                count--;
+              }
             } else {
               renderContexts[2].context.fillStyle = 'rgb(150,150,150)';
             }
