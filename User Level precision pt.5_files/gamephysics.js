@@ -116,7 +116,6 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
       teleport(checkpoint);
       if (str) {
         notificationText(str, renderContexts.notifications.context);
-        console.log("hmm")
       }
     }
   }
@@ -178,10 +177,9 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
                 collected: [],
               }
             },
-            onPhysics: (states, lvlArr, methods) => {
+            onPhysics: (lvlArr, methods) => {
               let myCols = Object.values(getCollisions(lvlArr, true));
               for (i in myCols) {
-                console.log(myCols)
                 if (getBlock(myCols[i]) == 7 && !states.Coin.collected.includes(myCols[i])) {
                   collected.push(myCols[i]);
                 }
@@ -213,7 +211,6 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
             name: "Stone",
             onPhysics: (lvlArr, methods) => {
               //Do collision with player
-              console.log(dims)
               let myCols = getCollisions(lvlArr, true, {
                 x: dims.x.vel,
                 y: dims.y.vel
@@ -385,13 +382,14 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
   }
 
   function getCollisions(lvlArr, vals, offsets) {
+    console.log(lvlArr)
     let whichOption = (vals ? getBlock : a => a)
     offsets = offsets || {
       x: 0,
       y: 0
     }
     return {
-      ul: getBlock(getMods({
+      ul: whichOption(getMods({
         x: {
           fullSize: dims.x.playerPosition + offsets.x + 1,
           unitSize: dims.x.blockSize
@@ -401,7 +399,7 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
           unitSize: dims.y.blockSize
         }
       }), lvlArr),
-      ur: getBlock(getMods({
+      ur: whichOption(getMods({
         x: {
           fullSize: dims.x.playerPosition + dims.x.playerSize + offsets.x - 1,
           unitSize: dims.x.blockSize
@@ -411,7 +409,7 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
           unitSize: dims.y.blockSize
         }
       }), lvlArr),
-      dr: getBlock(getMods({
+      dr: whichOption(getMods({
         x: {
           fullSize: dims.x.playerPosition + dims.x.playerSize + offsets.x - 1,
           unitSize: dims.x.blockSize
@@ -421,7 +419,7 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
           unitSize: dims.y.blockSize
         }
       }), lvlArr),
-      dl: getBlock(getMods({
+      dl: whichOption(getMods({
         x: {
           fullSize: dims.x.playerPosition + offsets.x + 1,
           unitSize: dims.x.blockSize
@@ -559,7 +557,7 @@ var platformerFactory = function(list, renderSpot /*renderSpot is either an empt
     //Do physics stuff
     Object.values(blockData).map(i => {
       if (i.hasOwnProperty("onPhysics")) {
-        i.onPhysics(states, levelArr, ret);
+        i.onPhysics(levelArr, ret);
       }
     })
   }
